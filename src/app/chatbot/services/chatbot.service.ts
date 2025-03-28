@@ -11,17 +11,17 @@ export class ChatbotService {
 
   constructor() { }
 
-  enviarPregunta(question: string): Observable<any> { // Reemplaza 'any' con el tipo correcto de la respuesta
+  enviarPregunta(parameter: string) {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'accept': '*/*' //  Aunque el servidor probablemente infiera el accept, lo incluimos por consistencia
+      'accept': '*/*'
     });
 
     const requestBody: ChatRequest = {
-      question: question
+      question: parameter
     };
 
-    return this.http.post<any>(environment.chatbotURL, requestBody, { headers });  // Reemplaza 'any' con el tipo correcto de la respuesta
+    return this.http.post(environment.chatbotURL, requestBody, { headers });
   }
 }
 

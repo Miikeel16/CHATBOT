@@ -1,1 +1,4 @@
-export interface mensajes { texto: string; tipo: 'usuario' | 'bot' }
+export interface Mensajes {
+    texto: string;
+    tipo: 'usuario' | 'bot'
+}

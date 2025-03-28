@@ -2,6 +2,5 @@
 @import "tailwindcss";
 
 @plugin "daisyui" {
-    themes: cupcake --default, retro --prefersdark;
+    themes: lofi --default, retro --prefersdark;
 }
-
