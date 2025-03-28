@@ -2,5 +2,5 @@
 @import "tailwindcss";
 
 @plugin "daisyui" {
-    themes: cyberpunk --default, dark --prefersdark;
+    themes: cupcake --default, dark --prefersdark;
 }
