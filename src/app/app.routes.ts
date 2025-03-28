@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
-import { ChatbotComponent } from './chatbot/pages/chatbot/chatbot.component';
+import { QuestionBarComponent } from './chatbot/components/question-bar/question-bar.component';
 
 export const routes: Routes = [
   {
     path: '',
-    component: ChatbotComponent,
+    component: QuestionBarComponent,
   },
   {
     path:'**',
