@@ -5,11 +5,18 @@ import { environment } from '../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
+/**
+ * Clase que maneja la comunicación con el chatbot.
+ */
 export class ChatbotService {
   private http = inject(HttpClient);
 
-  constructor() { }
-
+  /**
+   * Envía una pregunta al chatbot.
+   *
+   * @param parameter - La pregunta que se enviará al chatbot.
+   * @returns Observable - Un observable que representa la respuesta del servidor.
+   */
   enviarPregunta(parameter: string) {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -26,6 +33,11 @@ export class ChatbotService {
   }
 }
 
+/**
+ * Interfaz para representar una solicitud de chat.
+ * @interface ChatRequest
+ * @property {string} question - El contenido de la pregunta por el usuario
+ */
 interface ChatRequest {
   question: string;
 }
