@@ -14,9 +14,6 @@ export class QuestionBarComponent {
   chatbot = inject(ChatbotService);
   chainChat = signal<Mensajes[]>([]);
 
-  // @Output() mensajeEnviado = new EventEmitter<string>();
-  // nuevoMensaje: string = '';
-
   enviarMensaje(mensaje: string) {
     if (mensaje.trim() !== '') {
       // this.mensajeEnviado.emit(mensaje);
