@@ -1,14 +1,16 @@
-import { Component, EventEmitter, inject, Output, signal } from '@angular/core';
+import { Component, ElementRef, EventEmitter, inject, Output, signal, ViewChild } from '@angular/core';
 import { CurrentChatComponent } from '../current-chat/current-chat.component';
 import { ChatbotService } from '../../services/chatbot.service';
 import { Mensajes } from '../../interfaces/mensaje.interface';
+import { DashboardComponent } from "../dashboard/dashboard.component";
 
 @Component({
   selector: 'chat-question-bar',
-  imports: [CurrentChatComponent],
+  imports: [CurrentChatComponent, DashboardComponent],
   templateUrl: './question-bar.component.html',
 })
 export class QuestionBarComponent {
+  @ViewChild('txtchat') txtChat!: ElementRef;
   chatbot = inject(ChatbotService);
   chainChat = signal<Mensajes[]>([]);
 
@@ -18,6 +20,7 @@ export class QuestionBarComponent {
   enviarMensaje(mensaje: string) {
     if (mensaje.trim() !== '') {
       // this.mensajeEnviado.emit(mensaje);
+      this.txtChat.nativeElement.value = '';
       this.chainChat.update(info => [
         ...info,
         { texto: mensaje, tipo: 'usuario' }
