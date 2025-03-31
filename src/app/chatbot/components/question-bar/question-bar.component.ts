@@ -21,13 +21,20 @@ export class QuestionBarComponent {
         ...info,
         { texto: mensaje, tipo: 'usuario' }
       ])
-      this.chatbot.enviarPregunta(mensaje).subscribe((resp) => {
-        const jsonString = JSON.stringify(resp);
-        const jsonArray = JSON.parse(jsonString);
-        this.chainChat.update(info => [
-          ...info,
-          { texto: jsonArray.answare, tipo: 'bot' }
-        ])
+      this.chatbot.enviarPregunta(mensaje).subscribe({
+        next: (resp) => {
+          const jsonString = JSON.stringify(resp);
+          const jsonArray = JSON.parse(jsonString);
+          this.chainChat.update(info => [
+            ...info,
+            { texto: jsonArray.answare, tipo: 'bot' }
+          ])
+        }, error: (err) => {
+          this.chainChat.update(info => [
+            ...info,
+            { texto: 'Error', tipo: 'bot' }
+          ])
+        }
       }
       );
     }
