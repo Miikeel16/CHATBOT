@@ -10,16 +10,25 @@ import { DashboardComponent } from "../dashboard/dashboard.component";
   templateUrl: './question-bar.component.html',
 })
 export class QuestionBarComponent {
+  // Referencia al campo de entrada de texto del mensaje
   @ViewChild('txtchat') txtChat!: ElementRef;
+  // Inyección del servicio del chatbot con la API
   chatbot = inject(ChatbotService);
+  // Señal que almacena la cadena de mensajes del chat
   chainChat = signal<Mensajes[]>([]);
 
+  /**
+   * Envía un mensaje al chatbot y actualiza la cadena de chat.
+   *
+   * @param mensaje - El mensaje que se enviará a la API.
+   */
   enviarMensaje(mensaje: string) {
     if (mensaje.trim() != '') {
+      // Limpia el campo de entrada
       this.txtChat.nativeElement.value = '';
       this.chainChat.update(info => [
         ...info,
-        { texto: mensaje, tipo: 'usuario' }
+        { texto: mensaje, tipo: 'usuario' } // Agrega el mensaje del usuario
       ])
       this.chatbot.enviarPregunta(mensaje).subscribe({
         next: (resp) => {
@@ -27,12 +36,12 @@ export class QuestionBarComponent {
           const jsonArray = JSON.parse(jsonString);
           this.chainChat.update(info => [
             ...info,
-            { texto: jsonArray.answare, tipo: 'bot' }
+            { texto: jsonArray.answare, tipo: 'bot' } // Agrega la respuesta de la API
           ])
         }, error: (err) => {
           this.chainChat.update(info => [
             ...info,
-            { texto: 'Error', tipo: 'bot' }
+            { texto: 'Error', tipo: 'bot' } // Manejo de errores
           ])
         }
       }
