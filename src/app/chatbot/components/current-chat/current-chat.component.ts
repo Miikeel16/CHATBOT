@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, input, ViewChild } from '@angular/core';
 import { Mensajes } from '../../interfaces/mensaje.interface';
 
 @Component({
@@ -6,6 +6,19 @@ import { Mensajes } from '../../interfaces/mensaje.interface';
   imports: [],
   templateUrl: './current-chat.component.html',
 })
-export class CurrentChatComponent {
+export class CurrentChatComponent implements AfterViewChecked {
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   mensajes = input<Mensajes[]>();
+
+  ngAfterViewInit(): void {
+    this.scrollToBottom();
+  }
+
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
+  scrollToBottom(): void {
+    const chat = this.scrollContainer.nativeElement;
+    chat.scrollTop = chat.scrollHeight;
+  }
 }

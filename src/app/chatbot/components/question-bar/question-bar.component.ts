@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, inject, Output, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { CurrentChatComponent } from '../current-chat/current-chat.component';
 import { ChatbotService } from '../../services/chatbot.service';
 import { Mensajes } from '../../interfaces/mensaje.interface';
@@ -14,12 +14,8 @@ export class QuestionBarComponent {
   chatbot = inject(ChatbotService);
   chainChat = signal<Mensajes[]>([]);
 
-  // @Output() mensajeEnviado = new EventEmitter<string>();
-  // nuevoMensaje: string = '';
-
   enviarMensaje(mensaje: string) {
-    if (mensaje.trim() !== '') {
-      // this.mensajeEnviado.emit(mensaje);
+    if (mensaje.trim() != '') {
       this.txtChat.nativeElement.value = '';
       this.chainChat.update(info => [
         ...info,
