@@ -12,6 +12,16 @@ export class DashboardComponent {
   // Señal que almacena la lista de títulos de chats
   chats = signal<string[]>([]);
 
+  constructor() {
+    const stored = JSON.parse(localStorage.getItem('chatHistory') || '{}');
+    for (let index = 0; index < stored.length; index++) {
+      const element = stored[index];
+      this.chats.update(data => [
+        ...data, element
+      ])
+    }
+  }
+
   /**
    * Agrega un nuevo titulo al historico de chats.
    *
@@ -22,6 +32,7 @@ export class DashboardComponent {
       this.chats.update(data => [
         ...data, chatTitle // Agrega el nuevo título a la lista existente
       ])
+      localStorage.setItem('chatHistory', JSON.stringify(this.chats()));
     }
     // Limpia el campo value del input
     this.txtnew.nativeElement.value = '';
