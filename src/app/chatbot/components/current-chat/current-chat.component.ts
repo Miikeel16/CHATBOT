@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, ElementRef, HostListener, input, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, input, ViewChild } from '@angular/core';
 import { Mensajes } from '../../interfaces/mensaje.interface';
 
 @Component({
