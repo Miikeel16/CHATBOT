@@ -5,13 +5,13 @@
 
     @for (item of mensajes(); track $index) {
     @if (item.tipo=='usuario') {
-    <div class="flex justify-end">
+    <div class="flex justify-end break-words text-justify">
       <div class="bg-blue-500 text-white p-2 rounded-lg w-fit max-w-4xl">
         {{item.texto}}
       </div>
     </div>
     } @else {
-    <div class="flex justify-start">
+    <div class="flex justify-start break-words text-justify">
       <div class="bg-gray-300 text-black p-2 rounded-lg w-fit max-w-4xl">
         {{item.texto}}
       </div>
