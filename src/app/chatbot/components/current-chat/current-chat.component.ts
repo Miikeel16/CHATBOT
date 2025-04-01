@@ -1,4 +1,7 @@
-import { AfterViewChecked, Component, ElementRef, input, ViewChild } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, inject, input, ViewChild } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
+import { map } from 'rxjs';
 import { Mensajes } from '../../interfaces/mensaje.interface';
 
 @Component({
@@ -11,6 +14,10 @@ export class CurrentChatComponent implements AfterViewChecked {
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   // Lista de mensajes que se mostrarán en el chat
   mensajes = input<Mensajes[]>();
+
+  query = toSignal(
+    inject(ActivatedRoute).params.pipe(map(params => params['query']))
+  );
 
   /**
    * Se ejecuta después de que la vista ha sido inicializada.

@@ -7,11 +7,11 @@ export const routes: Routes = [
     component: QuestionBarComponent,
   },
   {
-    path:'**',
+    path: ':query',
+    component: QuestionBarComponent,
+  },
+  {
+    path: '**',
     redirectTo: '',
   },
-
-
-
-
 ];

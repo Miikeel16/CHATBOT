@@ -1,8 +1,9 @@
 import { Component, ElementRef, signal, ViewChild } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'dashboard',
-  imports: [],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent {
