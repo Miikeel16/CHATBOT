@@ -86,6 +86,11 @@ export class DashboardComponent {
     this.checkRouteExist();
   }
 
+  hayChatsValidos(): boolean {
+    // Verifica si hay chats en la lista y si al menos un chat tiene un título no nulo
+    return this.chats.length > 0 && this.chats.some(chat => chat.titulo !== null);
+  }
+
   // Verifica que exista la ruta en el chatHistory
   private checkRouteExist() {
     this.activatedRoute.params
