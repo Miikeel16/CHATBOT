@@ -87,6 +87,6 @@ export class DashboardComponent {
 
   // Método para alternar la visibilidad de la barra lateral
   toggleSidebar() {
-    this.isSidebarHidden = !this.isSidebarHidden;
+      this.isSidebarHidden = !this.isSidebarHidden;
   }
 }
