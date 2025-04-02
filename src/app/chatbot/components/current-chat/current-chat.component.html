@@ -10,15 +10,15 @@
     @for (contenido of chat.mensajes; track $index) {
     @if (contenido.tipo=='usuario') {
     <div class="flex justify-end break-words text-justify">
-      <div class="bg-blue-500 text-white p-2 rounded-lg w-fit max-w-4xl">
+      <div class="bg-blue-500 text-white p-2 rounded-lg w-fit max-w-full sm:max-w-4xl">
         {{contenido.texto}}
       </div>
     </div>
     } @else {
     <div class="flex justify-start break-words text-justify">
-      <div class="w-fit max-w-4xl">
+      <div class="w-fit max-w-full sm:max-w-4xl">
         <div class="text-sm text-gray-500">ChatLKS</div>
-        <div class="bg-gray-300 text-black p-2 rounded-lg w-fit max-w-4xl">
+        <div class="bg-gray-300 text-black p-2 rounded-lg w-fit max-w-full sm:max-w-4xl">
           {{contenido.texto}}
         </div>
       </div>

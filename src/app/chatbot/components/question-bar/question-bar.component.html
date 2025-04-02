@@ -1,4 +1,4 @@
-<div class="flex flex-row w-full">
+<div class="flex flex-col sm:flex-row w-full">
   <dashboard />
   <div class="w-full">
     <h2 class="m-4 pb-2 text-lg font-semibold border-b border-black-300 flex items-center">
@@ -9,7 +9,7 @@
     <chat-current [chats]="chat()"></chat-current>
 
     <div class="mt-6 flex justify-center w-full">
-      <div class="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center space-x-2 w-[80%] max-w-lg">
+      <div class="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center space-x-2 w-[90%] max-w-lg sm:w-[80%]">
         <fieldset class="fieldset w-full">
           <input type="text" class="input w-full" placeholder="Escribe aquí" #txtchat
             (keyup.enter)="enviarMensaje(txtchat.value)" />

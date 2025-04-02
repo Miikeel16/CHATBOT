@@ -1,9 +1,9 @@
-<div class="min-h-screen w-55 relative">
+<div class="min-h-screen w-full sm:w-55 relative" [class.hidden]="isSidebarHidden">
   <div class="flex w-full max-w-xs pt-4 bg-white">
     <ul class="flex flex-col w-full">
       <li class="my-px">
         <div class="flex flex-row items-center h-12 px-4 rounded-lg text-gray-600">
-          <span class=" flex items-center justify-center text-lg text-gray-400" (click)="nuevoChat(txtnew.value)">
+          <span class="flex items-center justify-center text-lg text-gray-400" (click)="nuevoChat(txtnew.value)">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
               <path fill="currentColor"
                 d="M11 8v3H8v2h3v3h2v-3h3v-2h-3V8zm2-5.95v3.03c3.39.49 6 3.39 6 6.92c0 .9-.18 1.75-.48 2.54l2.6 1.53c.56-1.24.88-2.62.88-4.07c0-5.18-3.95-9.45-9-9.95M12 19c-3.87 0-7-3.13-7-7c0-3.53 2.61-6.43 6-6.92V2.05c-5.06.5-9 4.76-9 9.95c0 5.52 4.47 10 9.99 10c3.31 0 6.24-1.61 8.06-4.09l-2.6-1.53A6.95 6.95 0 0 1 12 19" />
@@ -66,3 +66,10 @@
     </ul>
   </div>
 </div>
+
+<!-- Botón de ocultar/mostrar solo para móviles -->
+<button (click)="toggleSidebar()" class="sm:hidden p-2 bg-gray-400 text-white rounded-full absolute top-4 right-4 z-50">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M7.5 14.5V9.116q0-.672.472-1.144T9.116 7.5h8.957l-3.075-3.075l.714-.713L20 8l-4.288 4.308l-.714-.708l3.075-3.1H9.115q-.269 0-.442.173t-.173.443V14.5zM5.616 20q-.672 0-1.144-.472T4 18.385V4.615h1v13.77q0 .269.173.442t.443.173h10.769q.269 0 .442-.173t.173-.442V14.5h1v3.885q0 .67-.472 1.143q-.472.472-1.143.472z"/>
+  </svg>
+</button>

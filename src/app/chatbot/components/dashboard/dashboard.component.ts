@@ -62,4 +62,10 @@ export class DashboardComponent {
     this.chats.set([]); // Vacía el array de chats
     localStorage.removeItem('chatHistory'); // Elimina el historial almacenado
   }
+  isSidebarHidden: boolean = false;
+
+  // Método para alternar la visibilidad de la barra lateral
+  toggleSidebar() {
+    this.isSidebarHidden = !this.isSidebarHidden;
+  }
 }
