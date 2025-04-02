@@ -5,11 +5,13 @@
 
   <div class="space-y-3 mt-3">
 
-    @for (item of mensajes(); track $index) {
-    @if (item.tipo=='usuario') {
+    @for (chat of chats(); track $index) {
+    @if (chat.titulo===query() || chat.titulo===null) {
+    @for (contenido of chat.mensajes; track $index) {
+    @if (contenido.tipo=='usuario') {
     <div class="flex justify-end break-words text-justify">
       <div class="bg-blue-500 text-white p-2 rounded-lg w-fit max-w-4xl">
-        {{item.texto}}
+        {{contenido.texto}}
       </div>
     </div>
     } @else {
@@ -17,10 +19,12 @@
       <div class="w-fit max-w-4xl">
         <div class="text-sm text-gray-500">ChatLKS</div>
         <div class="bg-gray-300 text-black p-2 rounded-lg w-fit max-w-4xl">
-          {{item.texto}}
+          {{contenido.texto}}
         </div>
       </div>
     </div>
+    }
+    }
     }
     }
 

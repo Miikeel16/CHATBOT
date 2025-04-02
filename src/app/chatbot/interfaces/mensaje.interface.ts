@@ -1,3 +1,8 @@
+export interface Chats {
+    titulo: string;
+    mensajes: Mensajes[];
+}
+
 /**
  * Interfaz que representa un mensaje en el sistema del chatbot.
  * @interface Mensajes

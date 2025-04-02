@@ -2,7 +2,7 @@ import { AfterViewChecked, Component, ElementRef, inject, input, ViewChild } fro
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
-import { Mensajes } from '../../interfaces/mensaje.interface';
+import type { Chats } from '../../interfaces/mensaje.interface';
 
 @Component({
   selector: 'chat-current',
@@ -12,8 +12,8 @@ import { Mensajes } from '../../interfaces/mensaje.interface';
 export class CurrentChatComponent implements AfterViewChecked {
   // Referencia al contenedor del chat
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
-  // Lista de mensajes que se mostrarán en el chat
-  mensajes = input<Mensajes[]>();
+  // Lista de chats con su contenido que se mostrarán en el chat seleccionado
+  chats = input<Chats[]>();
 
   // Obtiene el parámetro 'query' de la ruta activa
   query = toSignal(
