@@ -19,29 +19,37 @@ export class QuestionBarComponent {
 
   /**
    * Envía un mensaje al chatbot y actualiza la cadena de chat.
-   *
    * @param mensaje - El mensaje que se enviará a la API.
    */
   enviarMensaje(mensaje: string) {
+    // Verifica que el mensaje no esté vacío
     if (mensaje.trim() != '') {
       // Limpia el campo de entrada
       this.txtChat.nativeElement.value = '';
+
+      // Agrega el mensaje del usuario a la cadena de chat
       this.chainChat.update(info => [
         ...info,
         { texto: mensaje, tipo: 'usuario' } // Agrega el mensaje del usuario
       ])
+
+      // Envía el mensaje al chatbot y maneja la respuesta
       this.chatbot.enviarPregunta(mensaje).subscribe({
         next: (resp) => {
+          // Convierte la respuesta a JSON y la parsea
           const jsonString = JSON.stringify(resp);
           const jsonArray = JSON.parse(jsonString);
+
+          // Agrega la respuesta del bot a la cadena de chat
           this.chainChat.update(info => [
             ...info,
             { texto: jsonArray.answare, tipo: 'bot' } // Agrega la respuesta de la API
           ])
         }, error: (err) => {
+          // Manejo de errores: agrega un mensaje de error a la cadena de chat
           this.chainChat.update(info => [
             ...info,
-            { texto: 'Error', tipo: 'bot' } // Manejo de errores
+            { texto: 'Error', tipo: 'bot' } // Mensaje de errpr
           ])
         }
       });

@@ -13,7 +13,6 @@ export class ChatbotService {
 
   /**
    * Envía una pregunta al chatbot.
-   *
    * @param parameter - La pregunta que se enviará al chatbot.
    * @returns Observable - Un observable que representa la respuesta del servidor.
    */

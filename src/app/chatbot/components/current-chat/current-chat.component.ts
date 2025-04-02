@@ -15,6 +15,7 @@ export class CurrentChatComponent implements AfterViewChecked {
   // Lista de mensajes que se mostrarán en el chat
   mensajes = input<Mensajes[]>();
 
+  // Obtiene el parámetro 'query' de la ruta activa
   query = toSignal(
     inject(ActivatedRoute).params.pipe(map(params => params['query']))
   );
