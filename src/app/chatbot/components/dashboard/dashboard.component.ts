@@ -44,4 +44,8 @@ export class DashboardComponent {
       return newChats;
     });
   }
+  eliminarTodosLosChats() {
+    this.chats.set([]); // Vacía el array de chats
+    localStorage.removeItem('chatHistory'); // Elimina el historial almacenado
+  }
 }

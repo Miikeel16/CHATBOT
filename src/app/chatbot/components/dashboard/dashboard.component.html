@@ -14,8 +14,8 @@
             [disabled]="chats().length >= 10" [placeholder]="chats().length >= 10 ? 'Máximos creados' : 'Nuevo Chat'">
         </div>
       </li>
-      <li class="my-px">
-        <span class="flex font-medium text-sm text-gray-400 px-4 my-4 uppercase">Chats</span>
+      <li class="my-px flex items-center ">
+        <span class="font-medium text-sm text-gray-400 uppercase ml-2">Chats</span>
       </li>
       @for (chat of chats(); track $index) {
       <li class="my-px">
@@ -38,7 +38,7 @@
         </a>
       </li>
       }
-      <li class="my-px">
+      <li class="my-px mb-4"> <!-- Agregamos margen inferior -->
         <a routerLink="/" routerLinkActive="bg-gray-100 shadow-md" [routerLinkActiveOptions]="{ exact: true }"
           class="flex flex-row items-center h-12 px-4 rounded-lg text-gray-600 hover:bg-gray-100 w-full justify-between">
           <div class="flex flex-row items-center">
@@ -52,6 +52,17 @@
           </div>
         </a>
       </li>
+      @if (chats().length>0) {
+      <li  class="flex justify-between items-center">
+        <button class="flex items-center gap-2 bg-red-400 text-white px-3 py-1 rounded hover:bg-red-600 ml-3"
+                (click)="eliminarTodosLosChats()">
+          Borrar chats
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12 2c5.53 0 10 4.47 10 10s-4.47 10-10 10S2 17.53 2 12S6.47 2 12 2m5 5h-2.5l-1-1h-3l-1 1H7v2h10zM9 18h6a1 1 0 0 0 1-1v-7H8v7a1 1 0 0 0 1 1"/>
+          </svg>
+        </button>
+      </li>
+    }
     </ul>
   </div>
 </div>
