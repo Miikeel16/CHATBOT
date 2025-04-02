@@ -19,10 +19,24 @@ export class DashboardComponent {
   @Input() chats: Chats[] = [];
   // Señal que indica si hay un error en la entrada
   inputError = signal(false);
+  // Estado de visibilidad de la barra lateral
+  isSidebarHidden: boolean = false;
 
   ngOnChanges() {
     // Verifica los parámetros de la consulta cada vez que cambien los chats
     this.checkRouteExist();
+  }
+
+  ngOnInit() {
+    // Agrega un listener para el evento de redimensionamiento de la ventana
+    window.addEventListener('resize', this.onResize.bind(this));
+    // Llama a onResize para establecer el estado inicial
+    this.onResize();
+  }
+
+  ngOnDestroy() {
+    // Elimina el listener al destruir el componente
+    window.removeEventListener('resize', this.onResize.bind(this));
   }
 
   /**
@@ -83,10 +97,16 @@ export class DashboardComponent {
         }
       });
   }
-  isSidebarHidden: boolean = false;
 
-  // Método para alternar la visibilidad de la barra lateral
+  onResize() {
+    // Si el ancho de la ventana es mayor o igual a 640px, muestra la barra lateral
+    if (window.innerWidth >= 640) {
+      this.isSidebarHidden = false;
+    }
+  }
+
   toggleSidebar() {
-      this.isSidebarHidden = !this.isSidebarHidden;
+    // Alterna la visibilidad de la barra lateral
+    this.isSidebarHidden = !this.isSidebarHidden;
   }
 }
