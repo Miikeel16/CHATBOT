@@ -11,15 +11,16 @@
           </span>
           <input type="text" class="m-3 w-full border-2 rounded-lg border-gray-300 p-1 transition-all duration-500"
             [class.shake]="inputError()" #txtnew (keyup.enter)="nuevoChat(txtnew.value)" maxlength="17"
-            [disabled]="chats().length >= 10" [placeholder]="chats().length >= 10 ? 'Máximos creados' : 'Nuevo Chat'">
+            [disabled]="chats.length >= 10" [placeholder]="chats.length >= 10 ? 'Máximos creados' : 'Nuevo Chat'">
         </div>
       </li>
       <li class="my-px flex items-center ">
         <span class="font-medium text-sm text-gray-400 uppercase ml-2">Chats</span>
       </li>
-      @for (chat of chats(); track $index) {
+      @for (chat of chats; track $index) {
+      @if (chat.titulo) {
       <li class="my-px">
-        <a [routerLink]="['/', chat]" routerLinkActive="bg-gray-100 shadow-md"
+        <a [routerLink]="['/', chat.titulo]" routerLinkActive="bg-gray-100 shadow-md"
           class="flex flex-row items-center h-12 px-4 rounded-lg text-gray-600 hover:bg-gray-100 w-full justify-between">
           <div class="flex flex-row items-center">
             <span class="flex items-center justify-center text-lg text-gray-400">
@@ -28,7 +29,7 @@
                   d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89l.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7s-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.95 8.95 0 0 0 13 21a9 9 0 0 0 0-18m-1 5v5l4.28 2.54l.72-1.21l-3.5-2.08V8z" />
               </svg>
             </span>
-            <span class="ml-3">{{ chat }}</span>
+            <span class="ml-3">{{ chat.titulo }}</span>
           </div>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
             class="cursor-pointer hover:text-red-500" (click)="eliminarChat($index)">
@@ -38,7 +39,8 @@
         </a>
       </li>
       }
-      <li class="my-px mb-4"> <!-- Agregamos margen inferior -->
+      }
+      <li class="my-px mb-4">
         <a routerLink="/" routerLinkActive="bg-gray-100 shadow-md" [routerLinkActiveOptions]="{ exact: true }"
           class="flex flex-row items-center h-12 px-4 rounded-lg text-gray-600 hover:bg-gray-100 w-full justify-between">
           <div class="flex flex-row items-center">
@@ -52,17 +54,18 @@
           </div>
         </a>
       </li>
-      @if (chats().length>0) {
-      <li  class="flex justify-between items-center">
+      @if (chats.length>0) {
+      <li class="flex justify-between items-center">
         <button class="flex items-center gap-2 bg-red-400 text-white px-3 py-1 rounded hover:bg-red-600 ml-3"
-                (click)="eliminarTodosLosChats()">
+          (click)="eliminarTodosLosChats()">
           Borrar chats
           <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
-            <path fill="currentColor" d="M12 2c5.53 0 10 4.47 10 10s-4.47 10-10 10S2 17.53 2 12S6.47 2 12 2m5 5h-2.5l-1-1h-3l-1 1H7v2h10zM9 18h6a1 1 0 0 0 1-1v-7H8v7a1 1 0 0 0 1 1"/>
+            <path fill="currentColor"
+              d="M12 2c5.53 0 10 4.47 10 10s-4.47 10-10 10S2 17.53 2 12S6.47 2 12 2m5 5h-2.5l-1-1h-3l-1 1H7v2h10zM9 18h6a1 1 0 0 0 1-1v-7H8v7a1 1 0 0 0 1 1" />
           </svg>
         </button>
       </li>
-    }
+      }
     </ul>
   </div>
 </div>

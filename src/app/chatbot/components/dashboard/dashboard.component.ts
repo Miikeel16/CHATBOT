@@ -1,5 +1,7 @@
-import { Component, ElementRef, signal, ViewChild } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, ElementRef, inject, Input, input, signal, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { map } from 'rxjs';
+import type { Chats } from '../../interfaces/mensaje.interface';
 
 @Component({
   selector: 'dashboard',
@@ -7,20 +9,18 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent {
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+
   // Referencia al campo de entrada para el nuevo chat
   @ViewChild('txtnew') txtnew!: ElementRef;
-  // Señal que almacena el historial de chats
-  chats = signal<string[]>([]);
+  @Input() chats: Chats[] = [];
   // Señal que indica si hay un error en la entrada
   inputError = signal(false);
 
-  constructor() {
-    // Recupera el historial de chats del almacenamiento local
-    const stored = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-    // Si se recupera un array, lo establece en la señal de chats
-    if (Array.isArray(stored)) {
-      this.chats.set(stored);
-    }
+  ngOnChanges() {
+    // Verifica los parámetros de la consulta cada vez que cambien los chats
+    this.checkQueryParam();
   }
 
   /**
@@ -32,15 +32,15 @@ export class DashboardComponent {
     if (chatTitle.trim() === '') return;
 
     // Verifica si el chat ya existe en el historial
-    if (this.chats().includes(chatTitle)) {
+    if (this.chats.some(chat => chat.titulo === chatTitle)) {
       this.inputError.set(true);  // Activa la animación de error
       setTimeout(() => this.inputError.set(false), 500); // Desactiva el error después de 500ms
       return;
     }
 
-    // Agrega el nuevo chat al historial y actualiza el almacenamiento local
-    this.chats.update(data => [...data, chatTitle]);
-    localStorage.setItem('chatHistory', JSON.stringify(this.chats()));
+    const newChat: Chats = { titulo: chatTitle, mensajes: [] };
+    this.chats.push(newChat);
+    localStorage.setItem('chatCompleteHistory', JSON.stringify(this.chats));
     // Limpia el campo de entrada
     this.txtnew.nativeElement.value = '';
   }
@@ -50,16 +50,23 @@ export class DashboardComponent {
    * @param index - El índice del chat a eliminar.
    */
   eliminarChat(index: number) {
-    // Actualiza el historial de chats eliminando el chat en el índice especificado
-    this.chats.update(data => {
-      const newChats = data.filter((_, i) => i !== index);
-      // Actualiza el almacenamiento local con el nuevo historial
-      localStorage.setItem('chatHistory', JSON.stringify(newChats));
-      return newChats;
-    });
+    this.chats.splice(index, 1);
+    localStorage.setItem('chatCompleteHistory', JSON.stringify(this.chats));
+    this.checkQueryParam();
   }
   eliminarTodosLosChats() {
-    this.chats.set([]); // Vacía el array de chats
-    localStorage.removeItem('chatHistory'); // Elimina el historial almacenado
+    this.chats = [];  // Vacía el array de chats
+    localStorage.removeItem('chatCompleteHistory'); // Elimina el historial almacenado
+    this.checkQueryParam();
+  }
+
+  private checkQueryParam() {
+    this.activatedRoute.params
+      .pipe(map(params => params['query']))
+      .subscribe(query => {
+        if (query && !this.chats.some(chat => chat.titulo === query)) {
+          this.router.navigate(['/']);
+        }
+      });
   }
 }
