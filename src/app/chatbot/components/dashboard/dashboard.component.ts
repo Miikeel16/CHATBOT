@@ -57,8 +57,11 @@ export class DashboardComponent {
     // Crea un nuevo chat y lo agrega a la lista
     const newChat: Chats = { titulo: chatTitle, mensajes: [] };
     this.chats.push(newChat);
+
+    // Filtra los chats para evitar títulos vacíos o nulos
+    const filteredChats = this.chats.filter(chat => chat.titulo && chat.titulo.trim() !== '');
     // Guarda en localStorage
-    localStorage.setItem('chatHistory', JSON.stringify(this.chats));
+    localStorage.setItem('chatHistory', JSON.stringify(filteredChats));
     // Limpia el campo de entrada
     this.txtnew.nativeElement.value = '';
   }
