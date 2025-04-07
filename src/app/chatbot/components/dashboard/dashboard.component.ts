@@ -2,6 +2,7 @@ import { Component, ElementRef, inject, Input, signal, ViewChild } from '@angula
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { map } from 'rxjs';
 import type { Chats } from '../../interfaces/mensaje.interface';
+import { MysqlService } from '../../services/mysql.service';
 
 @Component({
   selector: 'dashboard',
@@ -12,6 +13,7 @@ export class DashboardComponent {
   // Inyección de dependencias para el enrutador y la ruta activada
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  mysql = inject(MysqlService);
 
   // Referencia al campo de entrada para el nuevo chat
   @ViewChild('txtnew') txtnew!: ElementRef;
@@ -70,11 +72,13 @@ export class DashboardComponent {
    * Elimina un chat del historial por su índice.
    * @param index - El índice del chat a eliminar.
    */
-  eliminarChat(index: number) {
+  eliminarChat(index: number, title: string) {
     // Elimina el chat del array
     this.chats.splice(index, 1);
     // Actualiza localStorage
     localStorage.setItem('chatHistory', JSON.stringify(this.chats));
+
+    this.mysql.borrarMensaje(title).subscribe();
     // Verifica que exista la ruta en el chatHistory
     this.checkRouteExist();
   }
@@ -85,6 +89,8 @@ export class DashboardComponent {
     this.chats = [];
     // Elimina el historial almacenado
     localStorage.removeItem('chatHistory');
+
+    this.mysql.borrarTodos().subscribe();
     // Verifica que exista la ruta en el chatHistory
     this.checkRouteExist();
   }

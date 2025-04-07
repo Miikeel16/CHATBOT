@@ -1,5 +1,6 @@
 <div class="flex flex-col sm:flex-row w-full">
-  <div class="min-h-screen w-64 sm:w-55 sm:relative fixed inset-y-0 left-0 bg-white z-50 transform transition-transform duration-300 ease-in-out"
+  <div
+    class="min-h-screen w-64 sm:w-55 sm:relative fixed inset-y-0 left-0 bg-white z-50 transform transition-transform duration-300 ease-in-out"
     [class.-translate-x-full]="isSidebarHidden">
     <div class="flex w-full max-w-xs pt-4 bg-white">
       <ul class="flex flex-col w-full">
@@ -35,7 +36,7 @@
               <span class="ml-3">{{ chat.titulo }}</span>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-              class="cursor-pointer hover:text-red-500" (click)="eliminarChat($index)">
+              class="cursor-pointer hover:text-red-500" (click)="eliminarChat($index, chat.titulo)">
               <path fill="currentColor"
                 d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zm0 5h2v9H9zm4 0h2v9h-2z" />
             </svg>

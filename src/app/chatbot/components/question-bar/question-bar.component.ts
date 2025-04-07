@@ -3,8 +3,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
 import type { Chats, Mensajes } from '../../interfaces/mensaje.interface';
-import { CurrentChatComponent } from '../current-chat/current-chat.component';
 import { ChatbotService } from '../../services/chatbot.service';
+import { MysqlService } from '../../services/mysql.service';
+import { CurrentChatComponent } from '../current-chat/current-chat.component';
 import { DashboardComponent } from "../dashboard/dashboard.component";
 
 @Component({
@@ -17,6 +18,7 @@ export class QuestionBarComponent {
   @ViewChild('txtchat') txtChat!: ElementRef;
   // Inyección del servicio del chatbot con la API
   chatbot = inject(ChatbotService);
+  mysql = inject(MysqlService);
   // Señal que almacena la cadena de mensajes del chat
   chainChat = signal<Mensajes[]>([]);
   // Señal para indicar si se está cargando
@@ -33,9 +35,38 @@ export class QuestionBarComponent {
     // Recupera el historial de chats del almacenamiento local
     const stored = JSON.parse(localStorage.getItem('chatHistory') || '[]');
     // Si se recupera un array, lo establece en la señal de chats
-    if (Array.isArray(stored)) {
+    if (Array.isArray(stored) && stored.length > 0) {
       this.chat.set(stored);
+    } else {
+      this.mysql.obtenerMensajes().subscribe(
+        (data) => {
+          this.chat.set(this.groupByTitle(data));
+          localStorage.setItem('chatHistory', JSON.stringify(this.groupByTitle(data)));
+        },
+        (error) => {
+          console.error('Error al obtener el historial de la base de datos: ', error);
+        }
+      );
     }
+  }
+
+  private groupByTitle(data: any[]): Chats[] {
+    const grouped: { [key: string]: Chats } = {};
+
+    data.forEach(item => {
+      const { title, content, type } = item;
+
+      // Si el título no existe en el objeto agrupado, inicializa un nuevo objeto Chats
+      if (!grouped[title]) {
+        grouped[title] = { titulo: title, mensajes: [] };
+      }
+
+      // Agrega el mensaje al array de mensajes correspondiente
+      grouped[title].mensajes.push({ texto: content, tipo: type });
+    });
+
+    // Devuelve un array de Chats a partir del objeto agrupado
+    return Object.values(grouped);
   }
 
   /**
@@ -124,6 +155,11 @@ export class QuestionBarComponent {
     // Guarda el historial en localStorage si hay un título
     if (this.query() !== undefined) {
       localStorage.setItem('chatHistory', JSON.stringify(this.chat()));
+      this.mysql.guardarMensaje(this.query(), contenido, tipoUser).subscribe(
+        // response => {
+        //   console.log('Message saved successfully:', response);
+        // }
+      );
     }
 
     // Filtra el historial para eliminar entradas con título nulo
@@ -132,5 +168,6 @@ export class QuestionBarComponent {
 
     // Actualiza localStorage
     localStorage.setItem('chatHistory', JSON.stringify(filteredHistory));
+
   }
 }
