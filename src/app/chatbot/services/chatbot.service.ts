@@ -5,9 +5,6 @@ import { environment } from '../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-/**
- * Clase que maneja la comunicación con el chatbot.
- */
 export class ChatbotService {
   private http = inject(HttpClient);
 
