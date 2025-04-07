@@ -1,3 +1,9 @@
+/**
+ * Interfaz que representa un chat.
+ * @interface Chats
+ * @property {string} titulo - Título del chat.
+ * @property {Mensajes[]} mensajes - Lista de mensajes en el chat.
+ */
 export interface Chats {
     titulo: string;
     mensajes: Mensajes[];

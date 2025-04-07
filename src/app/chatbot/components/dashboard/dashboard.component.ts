@@ -13,6 +13,8 @@ export class DashboardComponent {
   // Inyección de dependencias para el enrutador y la ruta activada
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+
+  // Inyección del servicio para manejar la base de datos
   mysql = inject(MysqlService);
 
   // Referencia al campo de entrada para el nuevo chat
@@ -77,7 +79,7 @@ export class DashboardComponent {
     this.chats.splice(index, 1);
     // Actualiza localStorage
     localStorage.setItem('chatHistory', JSON.stringify(this.chats));
-
+    // Llama al servicio para borrar el mensaje en el servidor
     this.mysql.borrarMensaje(title).subscribe();
     // Verifica que exista la ruta en el chatHistory
     this.checkRouteExist();
@@ -89,7 +91,7 @@ export class DashboardComponent {
     this.chats = [];
     // Elimina el historial almacenado
     localStorage.removeItem('chatHistory');
-
+    // Llama al servicio para borrar todos los mensajes en el servidor
     this.mysql.borrarTodos().subscribe();
     // Verifica que exista la ruta en el chatHistory
     this.checkRouteExist();

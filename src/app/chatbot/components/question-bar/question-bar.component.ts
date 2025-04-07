@@ -18,6 +18,7 @@ export class QuestionBarComponent {
   @ViewChild('txtchat') txtChat!: ElementRef;
   // Inyección del servicio del chatbot con la API
   chatbot = inject(ChatbotService);
+  // Inyección del servicio para manejar la base de datos
   mysql = inject(MysqlService);
   // Señal que almacena la cadena de mensajes del chat
   chainChat = signal<Mensajes[]>([]);
@@ -38,9 +39,12 @@ export class QuestionBarComponent {
     if (Array.isArray(stored) && stored.length > 0) {
       this.chat.set(stored);
     } else {
+      // Si no hay historial, lo obtiene de la base de datos
       this.mysql.obtenerMensajes().subscribe(
         (data) => {
+          // Agrupa mensajes por título
           this.chat.set(this.groupByTitle(data));
+          // Guarda en localStorage
           localStorage.setItem('chatHistory', JSON.stringify(this.groupByTitle(data)));
         },
         (error) => {
@@ -50,10 +54,14 @@ export class QuestionBarComponent {
     }
   }
 
+  // Método privado que agrupa los datos de chats por título
   private groupByTitle(data: any[]): Chats[] {
-    const grouped: { [key: string]: Chats } = {};
+    // Objeto para almacenar los chats agrupados por título
+    const grouped: { [title: string]: Chats } = {};
 
+    // Iterar sobre cada elemento del array de datos
     data.forEach(item => {
+      // Desestructuración para obtener el título, contenido y tipo del chat
       const { title, content, type } = item;
 
       // Si el título no existe en el objeto agrupado, inicializa un nuevo objeto Chats
@@ -152,22 +160,18 @@ export class QuestionBarComponent {
       return data;
     })
 
-    // Guarda el historial en localStorage si hay un título
+    // Si hay un título de chat definido, guarda en localStorage y en la base de datos
     if (this.query() !== undefined) {
       localStorage.setItem('chatHistory', JSON.stringify(this.chat()));
-      this.mysql.guardarMensaje(this.query(), contenido, tipoUser).subscribe(
-        // response => {
-        //   console.log('Message saved successfully:', response);
-        // }
-      );
+      this.mysql.guardarMensaje(this.query(), contenido, tipoUser).subscribe();
     }
 
-    // Filtra el historial para eliminar entradas con título nulo
-    const chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-    const filteredHistory = chatHistory.filter((item: { titulo: string | null; }) => item.titulo !== null);
+    // // Filtra el historial para eliminar entradas con título nulo
+    // const chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+    // const filteredHistory = chatHistory.filter((item: { titulo: string | null; }) => item.titulo !== null);
 
-    // Actualiza localStorage
-    localStorage.setItem('chatHistory', JSON.stringify(filteredHistory));
+    // // Actualiza localStorage
+    // localStorage.setItem('chatHistory', JSON.stringify(filteredHistory));
 
   }
 }
