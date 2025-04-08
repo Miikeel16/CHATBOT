@@ -34,7 +34,6 @@ export class QuestionBarComponent {
     inject(ActivatedRoute).params.pipe(map(params => params['query']))
   );
 
-  // Keycloak
   // Estado de autenticación del usuario
   authenticated = false;
   // Estado de Keycloak
@@ -206,13 +205,5 @@ export class QuestionBarComponent {
       localStorage.setItem('chatHistory', JSON.stringify(this.chat()));
       this.mysql.guardarMensaje(this.query(), contenido, tipoUser).subscribe();
     }
-
-    // // Filtra el historial para eliminar entradas con título nulo
-    // const chatHistory = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-    // const filteredHistory = chatHistory.filter((item: { titulo: string | null; }) => item.titulo !== null);
-
-    // // Actualiza localStorage
-    // localStorage.setItem('chatHistory', JSON.stringify(filteredHistory));
-
   }
 }
