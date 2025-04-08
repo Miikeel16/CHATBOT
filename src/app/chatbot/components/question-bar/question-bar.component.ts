@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import { Component, effect, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
@@ -7,6 +7,8 @@ import { ChatbotService } from '../../services/chatbot.service';
 import { MysqlService } from '../../services/mysql.service';
 import { CurrentChatComponent } from '../current-chat/current-chat.component';
 import { DashboardComponent } from "../dashboard/dashboard.component";
+import Keycloak from 'keycloak-js';
+import { KEYCLOAK_EVENT_SIGNAL, KeycloakEventType, ReadyArgs, typeEventArgs } from 'keycloak-angular';
 
 @Component({
   selector: 'chat-question-bar',
@@ -32,6 +34,12 @@ export class QuestionBarComponent {
     inject(ActivatedRoute).params.pipe(map(params => params['query']))
   );
 
+  // Keycloak
+  authenticated = false;
+  keycloakStatus: string | undefined;
+  private readonly keycloak = inject(Keycloak);
+  private readonly keycloakSignal = inject(KEYCLOAK_EVENT_SIGNAL);
+
   constructor() {
     // Recupera el historial de chats del almacenamiento local
     const stored = JSON.parse(localStorage.getItem('chatHistory') || '[]');
@@ -52,6 +60,28 @@ export class QuestionBarComponent {
         }
       );
     }
+
+    effect(() => {
+      const keycloakEvent = this.keycloakSignal();
+
+      this.keycloakStatus = keycloakEvent.type;
+
+      if (keycloakEvent.type === KeycloakEventType.Ready) {
+        this.authenticated = typeEventArgs<ReadyArgs>(keycloakEvent.args);
+      }
+
+      if (keycloakEvent.type === KeycloakEventType.AuthLogout) {
+        this.authenticated = false;
+      }
+    });
+  }
+
+  login() {
+    this.keycloak.login();
+  }
+
+  logout() {
+    this.keycloak.logout();
   }
 
   // Método privado que agrupa los datos de chats por título
