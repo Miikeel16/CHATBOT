@@ -35,9 +35,13 @@ export class QuestionBarComponent {
   );
 
   // Keycloak
+  // Estado de autenticación del usuario
   authenticated = false;
+  // Estado de Keycloak
   keycloakStatus: string | undefined;
+  // Inyección del servicio Keycloak
   private readonly keycloak = inject(Keycloak);
+  // Inyección de la señal de eventos de Keycloak
   private readonly keycloakSignal = inject(KEYCLOAK_EVENT_SIGNAL);
 
   constructor() {
@@ -61,27 +65,34 @@ export class QuestionBarComponent {
       );
     }
 
+    // Efecto para manejar eventos de Keycloak
     effect(() => {
+      // Obtiene el evento de Keycloak
       const keycloakEvent = this.keycloakSignal();
 
+      // Actualiza el estado de Keycloak
       this.keycloakStatus = keycloakEvent.type;
 
+      // Verifica si Keycloak está listo y actualiza el estado de autenticación
       if (keycloakEvent.type === KeycloakEventType.Ready) {
         this.authenticated = typeEventArgs<ReadyArgs>(keycloakEvent.args);
       }
 
+      // Maneja el evento de cierre de sesión
       if (keycloakEvent.type === KeycloakEventType.AuthLogout) {
-        this.authenticated = false;
+        this.authenticated = false; // Actualiza el estado de autenticación
       }
     });
   }
 
+  // Método para iniciar sesión
   login() {
-    this.keycloak.login();
+    this.keycloak.login(); // Llama al método de inicio de sesión de Keycloak
   }
 
+  // Método para cerrar sesión
   logout() {
-    this.keycloak.logout();
+    this.keycloak.logout(); // Llama al método de cierre de sesión de Keycloak
   }
 
   // Método privado que agrupa los datos de chats por título
