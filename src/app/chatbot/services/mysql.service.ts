@@ -29,13 +29,13 @@ export class MysqlService {
 
     // Método para borrar un mensaje por TITLE
     borrarMensaje(user: string, title: string): Observable<any> {
-        // Realiza una petición DELETE para borrar el mensaje específico usando su TITLE
+        // Realiza una petición DELETE para borrar el mensaje específico usando su TITLE y USER
         return this.http.delete(`${environment.mysqlURL}/${user}/${title}`);
     }
 
     // Método para borrar todos los mensajes
     borrarTodos(user: string): Observable<any> {
-        // Realiza una petición DELETE para borrar todos los mensajes
+        // Realiza una petición DELETE para borrar todos los mensajes del USER
         return this.http.delete(`${environment.mysqlURL}/${user}`);
     }
 }

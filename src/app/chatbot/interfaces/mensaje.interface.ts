@@ -1,6 +1,7 @@
 /**
  * Interfaz que representa un chat.
  * @interface Chats
+ * @property {string} usuario - Nombre del usuario que participa en el chat.
  * @property {string} titulo - Título del chat.
  * @property {Mensajes[]} mensajes - Lista de mensajes en el chat.
  */
