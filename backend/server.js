@@ -1,6 +1,6 @@
 const express = require('express'); // Importa el módulo express para crear el servidor
 const mysql = require('mysql2'); // Importa el módulo mysql2 para conectarse a la base de datos
-// const cors = require('cors'); // Importa cors para permitir solicitudes de diferentes orígenes (no se está utilizando actualmente)
+const cors = require('cors'); // Importa cors para permitir solicitudes de diferentes orígenes (no se está utilizando actualmente)
 
 // Crea la aplicación Express
 const app = express();
@@ -8,7 +8,7 @@ const app = express();
 const port = 3301;
 
 // Habilita CORS (no se está utilizando actualmente)
-// app.use(cors());
+app.use(cors());
 // Middleware para parsear el cuerpo de las solicitudes en formato JSON
 app.use(express.json());
 

@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/r
 import { map } from 'rxjs';
 import type { Chats } from '../../interfaces/mensaje.interface';
 import { MysqlService } from '../../services/mysql.service';
+import Keycloak from 'keycloak-js';
 
 @Component({
   selector: 'dashboard',
@@ -16,6 +17,12 @@ export class DashboardComponent {
 
   // Inyección del servicio para manejar la base de datos
   mysql = inject(MysqlService);
+
+  // Importa el servicio Keycloak
+  private readonly keycloak = inject(Keycloak);
+
+  // Propiedad que indica si el usuario está autenticado
+  authenticated = this.keycloak.authenticated; // Verifica el estado de autenticación
 
   // Referencia al campo de entrada para el nuevo chat
   @ViewChild('txtnew') txtnew!: ElementRef;
@@ -48,6 +55,9 @@ export class DashboardComponent {
    * @param chatTitle - El título del nuevo chat a agregar.
    */
   nuevoChat(chatTitle: string) {
+    // Verifica que el usuario esté autenticado
+    if (!this.authenticated) return;
+
     // Verifica que el título no esté vacío
     if (chatTitle.trim() === '') return;
 

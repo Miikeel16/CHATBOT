@@ -75,11 +75,20 @@ export class QuestionBarComponent {
       // Verifica si Keycloak está listo y actualiza el estado de autenticación
       if (keycloakEvent.type === KeycloakEventType.Ready) {
         this.authenticated = typeEventArgs<ReadyArgs>(keycloakEvent.args);
+
+        // Si no está autenticado, borra el historial del localStorage
+        if (!this.authenticated) {
+          localStorage.removeItem('chatHistory');
+          this.chat.set([]); // Limpia el historial de chats
+          return; // Salir del constructor si no está autenticado
+        }
       }
 
       // Maneja el evento de cierre de sesión
       if (keycloakEvent.type === KeycloakEventType.AuthLogout) {
         this.authenticated = false; // Actualiza el estado de autenticación
+        localStorage.removeItem('chatHistory'); // Borra el historial al cerrar sesión
+        this.chat.set([]); // Limpia el historial de chats
       }
     });
   }
@@ -161,7 +170,7 @@ export class QuestionBarComponent {
           // Manejo de errores: agrega un mensaje de error a la cadena de chat
           this.chainChat.update(info => [
             ...info,
-            { texto: 'Error', tipo: 'bot' } // Mensaje de errpr
+            { texto: 'Error', tipo: 'bot' } // Mensaje de error
           ])
 
           // Guarda la respuesta en el historial
