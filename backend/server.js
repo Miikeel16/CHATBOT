@@ -30,11 +30,11 @@ db.connect(err => {
 // Ruta para insertar un nuevo mensaje
 app.post('/messages', (req, res) => {
     // Desestructura los campos del cuerpo de la solicitud
-    const { title, content, type } = req.body;
+    const { user, title, content, type } = req.body;
 
     // Verifica que todos los campos requeridos estén presentes
-    if (title && content && type) {
-        db.query('INSERT INTO messages (title, content, type) VALUES (?, ?, ?)', [title, content, type],
+    if (user && title && content && type) {
+        db.query('INSERT INTO messages (user, title, content, type) VALUES (?, ?, ?, ?)', [user, title, content, type],
             (err, result) => {
                 if (err) {
                     console.error(err); // Imprime el error en la consola
@@ -62,13 +62,13 @@ app.get('/messages', (req, res) => {
 });
 
 // Ruta para eliminar un mensaje específico por título
-app.delete('/messages/:title', (req, res) => {
+app.delete('/messages/:user/:title', (req, res) => {
     // Obtiene el título del mensaje a eliminar de los parámetros de la ruta
-    const { title } = req.params;
+    const { user, title } = req.params;
 
     // Verifica que el título esté presente
-    if (title) {
-        db.query('DELETE FROM messages WHERE title = ?', [title], (err, result) => {
+    if (user && title) {
+        db.query('DELETE FROM messages WHERE user = ? and title = ?', [user, title], (err, result) => {
             if (err) {
                 console.error(err); // Imprime el error en la consola
                 return res.status(500).send({ error: 'Error al borrar mensajes' }) // Responde con un error 500
@@ -83,15 +83,21 @@ app.delete('/messages/:title', (req, res) => {
 });
 
 // Ruta para eliminar todos los mensajes
-app.delete('/messages', (req, res) => {
-    db.query('DELETE FROM messages', (err, result) => {
-        if (err) {
-            console.error(err); // Imprime el error en la consola
-            return res.status(500).send({ error: 'Error al borrar mensajes' }); // Responde con un error 500
-        }
-        // Responde con un mensaje de éxito
-        res.status(200).send({ message: 'Todos los mensajes eliminados' });
-    });
+app.delete('/messages/:user', (req, res) => {
+    const { user } = req.params;
+    if (user) {
+        db.query('DELETE FROM messages WHERE user = ?', [user], (err, result) => {
+            if (err) {
+                console.error(err); // Imprime el error en la consola
+                return res.status(500).send({ error: 'Error al borrar mensajes' }); // Responde con un error 500
+            }
+            // Responde con un mensaje de éxito
+            res.status(200).send({ message: 'Todos los mensajes eliminados' });
+        });
+    } else {
+        // Responde con un error 400 si faltan campos
+        res.status(400).send({ error: 'Faltan campos requeridos' });
+    }
 });
 
 // Iniciar el servidor

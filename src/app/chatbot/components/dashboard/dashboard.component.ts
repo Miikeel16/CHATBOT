@@ -1,9 +1,9 @@
 import { Component, ElementRef, inject, Input, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { map } from 'rxjs';
+import Keycloak from 'keycloak-js';
 import type { Chats } from '../../interfaces/mensaje.interface';
 import { MysqlService } from '../../services/mysql.service';
-import Keycloak from 'keycloak-js';
 
 @Component({
   selector: 'dashboard',
@@ -23,6 +23,8 @@ export class DashboardComponent {
 
   // Propiedad que indica si el usuario está autenticado
   authenticated = this.keycloak.authenticated; // Verifica el estado de autenticación
+  // Variable en la que almacenara el usuario logeado
+  user: string = '';
 
   // Referencia al campo de entrada para el nuevo chat
   @ViewChild('txtnew') txtnew!: ElementRef;
@@ -32,6 +34,13 @@ export class DashboardComponent {
   inputError = signal(false);
   // Estado de visibilidad de la barra lateral
   isSidebarHidden: boolean = false;
+
+  constructor() {
+    // Obtiene nombre de usuario que se ha logeado
+    this.keycloak.loadUserProfile().then(profile => {
+      this.user = profile.username || 'Usuario Desconocido';
+    })
+  }
 
   ngOnChanges() {
     // Verifica los parámetros de la consulta cada vez que cambien los chats
@@ -69,7 +78,7 @@ export class DashboardComponent {
     }
 
     // Crea un nuevo chat y lo agrega a la lista
-    const newChat: Chats = { titulo: chatTitle, mensajes: [] };
+    const newChat: Chats = { usuario: this.user, titulo: chatTitle, mensajes: [] };
     this.chats.push(newChat);
 
     // Filtra los chats para evitar títulos vacíos o nulos
@@ -90,7 +99,7 @@ export class DashboardComponent {
     // Actualiza localStorage
     localStorage.setItem('chatHistory', JSON.stringify(this.chats));
     // Llama al servicio para borrar el mensaje en el servidor
-    this.mysql.borrarMensaje(title).subscribe();
+    this.mysql.borrarMensaje(this.user, title).subscribe();
     // Verifica que exista la ruta en el chatHistory
     this.checkRouteExist();
   }
@@ -102,7 +111,7 @@ export class DashboardComponent {
     // Elimina el historial almacenado
     localStorage.removeItem('chatHistory');
     // Llama al servicio para borrar todos los mensajes en el servidor
-    this.mysql.borrarTodos().subscribe();
+    this.mysql.borrarTodos(this.user).subscribe();
     // Verifica que exista la ruta en el chatHistory
     this.checkRouteExist();
   }

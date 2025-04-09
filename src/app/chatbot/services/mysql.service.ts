@@ -12,13 +12,13 @@ export class MysqlService {
     constructor() { }
 
     // Método para guardar un mensaje
-    guardarMensaje(title: string, content: string, type: 'usuario' | 'bot'): Observable<any> {
+    guardarMensaje(user: string, title: string, content: string, type: 'usuario' | 'bot'): Observable<any> {
         const headers = new HttpHeaders({
             'Content-Type': 'application/json', // Tipo de contenido JSON
             'accept': '*/*' // Acepta cualquier tipo de respuesta
         });
         // Realiza una petición POST para guardar el mensaje en la URL definida en el entorno
-        return this.http.post<any>(environment.mysqlURL, { title, content, type }, { headers });
+        return this.http.post<any>(environment.mysqlURL, { user, title, content, type }, { headers });
     }
 
     // Método para obtener todos los mensajes
@@ -28,14 +28,14 @@ export class MysqlService {
     }
 
     // Método para borrar un mensaje por TITLE
-    borrarMensaje(title: string): Observable<any> {
+    borrarMensaje(user: string, title: string): Observable<any> {
         // Realiza una petición DELETE para borrar el mensaje específico usando su TITLE
-        return this.http.delete(`${environment.mysqlURL}/${title}`);
+        return this.http.delete(`${environment.mysqlURL}/${user}/${title}`);
     }
 
     // Método para borrar todos los mensajes
-    borrarTodos(): Observable<any> {
+    borrarTodos(user: string): Observable<any> {
         // Realiza una petición DELETE para borrar todos los mensajes
-        return this.http.delete(environment.mysqlURL);
+        return this.http.delete(`${environment.mysqlURL}/${user}`);
     }
 }

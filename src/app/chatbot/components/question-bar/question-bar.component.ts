@@ -2,13 +2,13 @@ import { Component, effect, ElementRef, inject, signal, ViewChild } from '@angul
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
+import Keycloak from 'keycloak-js';
+import { KEYCLOAK_EVENT_SIGNAL, KeycloakEventType, ReadyArgs, typeEventArgs } from 'keycloak-angular';
 import type { Chats, Mensajes } from '../../interfaces/mensaje.interface';
 import { ChatbotService } from '../../services/chatbot.service';
 import { MysqlService } from '../../services/mysql.service';
 import { CurrentChatComponent } from '../current-chat/current-chat.component';
 import { DashboardComponent } from "../dashboard/dashboard.component";
-import Keycloak from 'keycloak-js';
-import { KEYCLOAK_EVENT_SIGNAL, KeycloakEventType, ReadyArgs, typeEventArgs } from 'keycloak-angular';
 
 @Component({
   selector: 'chat-question-bar',
@@ -42,6 +42,8 @@ export class QuestionBarComponent {
   private readonly keycloak = inject(Keycloak);
   // Inyección de la señal de eventos de Keycloak
   private readonly keycloakSignal = inject(KEYCLOAK_EVENT_SIGNAL);
+  // Variable en la que almacenara el usuario logeado
+  user: string = '';
 
   constructor() {
     // Recupera el historial de chats del almacenamiento local
@@ -76,6 +78,10 @@ export class QuestionBarComponent {
       if (keycloakEvent.type === KeycloakEventType.Ready) {
         this.authenticated = typeEventArgs<ReadyArgs>(keycloakEvent.args);
 
+        this.keycloak.loadUserProfile().then(profile => {
+          this.user = profile.username || 'Usuario Desconocido';
+        })
+
         // Si no está autenticado, borra el historial del localStorage
         if (!this.authenticated) {
           localStorage.removeItem('chatHistory');
@@ -108,18 +114,26 @@ export class QuestionBarComponent {
     // Objeto para almacenar los chats agrupados por título
     const grouped: { [title: string]: Chats } = {};
 
+    // Obtiene nombre de usuario que se ha logeado
+    this.keycloak.loadUserProfile().then(profile => {
+      this.user = profile.username || 'Usuario Desconocido';
+    })
+
     // Iterar sobre cada elemento del array de datos
     data.forEach(item => {
       // Desestructuración para obtener el título, contenido y tipo del chat
-      const { title, content, type } = item;
+      const { user, title, content, type } = item;
 
-      // Si el título no existe en el objeto agrupado, inicializa un nuevo objeto Chats
-      if (!grouped[title]) {
-        grouped[title] = { titulo: title, mensajes: [] };
+      // Filtrar solo los mensajes del usuario que ha iniciado sesión
+      if (user === this.user) {
+        // Si el título no existe en el objeto agrupado, inicializa un nuevo objeto Chats
+        if (!grouped[title]) {
+          grouped[title] = { usuario: this.user, titulo: title, mensajes: [] };
+        }
+
+        // Agrega el mensaje al array de mensajes correspondiente
+        grouped[title].mensajes.push({ texto: content, tipo: type });
       }
-
-      // Agrega el mensaje al array de mensajes correspondiente
-      grouped[title].mensajes.push({ texto: content, tipo: type });
     });
 
     // Devuelve un array de Chats a partir del objeto agrupado
@@ -200,6 +214,7 @@ export class QuestionBarComponent {
       } else {
         // Si no existe, crea un nuevo chat
         data.push({
+          usuario: this.user,
           titulo: nuevoTitulo,
           mensajes: [{ texto: contenido, tipo: tipoUser }]
         });
@@ -212,7 +227,7 @@ export class QuestionBarComponent {
     // Si hay un título de chat definido, guarda en localStorage y en la base de datos
     if (this.query() !== undefined) {
       localStorage.setItem('chatHistory', JSON.stringify(this.chat()));
-      this.mysql.guardarMensaje(this.query(), contenido, tipoUser).subscribe();
+      this.mysql.guardarMensaje(this.user, this.query(), contenido, tipoUser).subscribe();
     }
   }
 }

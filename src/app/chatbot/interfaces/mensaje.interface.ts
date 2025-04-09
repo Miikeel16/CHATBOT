@@ -5,6 +5,7 @@
  * @property {Mensajes[]} mensajes - Lista de mensajes en el chat.
  */
 export interface Chats {
+    usuario: string;
     titulo: string;
     mensajes: Mensajes[];
 }
