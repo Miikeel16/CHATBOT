@@ -1,11 +1,19 @@
 <div class="flex flex-col sm:flex-row w-full">
+  <!-- Contenedor principal que se adapta: columna en móviles, fila en pantallas grandes -->
+
   <div
     class="min-h-screen w-64 sm:w-55 sm:relative fixed inset-y-0 left-0 bg-white z-50 transform transition-transform duration-300 ease-in-out"
     [class.-translate-x-full]="isSidebarHidden">
+    <!-- Sidebar fija a la izquierda con animación al ocultarse -->
+
     <div class="flex w-full max-w-xs pt-4 bg-white">
       <ul class="flex flex-col w-full">
+
         <li class="my-px">
+          <!-- Sección para crear nuevo chat -->
+
           <div class="flex flex-row items-center h-12 px-4 rounded-lg text-gray-600">
+            <!-- Icono de más (crear nuevo chat) -->
             <span class="flex items-center justify-center text-lg text-gray-400 cursor-pointer"
               (click)="this.authenticated ? nuevoChat(txtnew.value) : null">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -13,32 +21,44 @@
                   d="M11 8v3H8v2h3v3h2v-3h3v-2h-3V8zm2-5.95v3.03c3.39.49 6 3.39 6 6.92c0 .9-.18 1.75-.48 2.54l2.6 1.53c.56-1.24.88-2.62.88-4.07c0-5.18-3.95-9.45-9-9.95M12 19c-3.87 0-7-3.13-7-7c0-3.53 2.61-6.43 6-6.92V2.05c-5.06.5-9 4.76-9 9.95c0 5.52 4.47 10 9.99 10c3.31 0 6.24-1.61 8.06-4.09l-2.6-1.53A6.95 6.95 0 0 1 12 19" />
               </svg>
             </span>
+
+            <!-- Input para nombre del nuevo chat -->
             <input type="text" class="m-3 w-full border-2 rounded-lg border-gray-300 p-1 transition-all duration-500"
               [class.shake]="inputError()" #txtnew (keyup.enter)="this.authenticated ? nuevoChat(txtnew.value) : null"
               maxlength="30" [disabled]="!this.authenticated || chats.length >= 10"
               [placeholder]="this.authenticated ? (chats.length >= 10 ? 'Máximos creados' : 'Nuevo Chat') : 'Solo para usuarios'">
           </div>
         </li>
+
         <li class="my-px flex items-center ">
+          <!-- Título de sección -->
           <span class="font-medium text-sm text-gray-400 uppercase ml-2">Chats</span>
         </li>
+
+        <!-- Listado de chats -->
         @for (chat of chats; track $index) {
         @if (chat.titulo) {
         <li class="my-px">
           <a [routerLink]="['/', chat.titulo]" routerLinkActive="bg-gray-100 shadow-md"
             class="flex flex-row items-center h-12 px-4 rounded-lg text-gray-600 hover:bg-gray-100 w-full justify-between">
+
             <div class="flex flex-row items-center">
+              <!-- Icono de mensaje -->
               <span class="flex items-center justify-center text-lg text-gray-400">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                   <path fill="currentColor"
                     d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89l.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7s-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.95 8.95 0 0 0 13 21a9 9 0 0 0 0-18m-1 5v5l4.28 2.54l.72-1.21l-3.5-2.08V8z" />
                 </svg>
               </span>
+
+              <!-- Título del chat -->
               <span class="ml-3 overflow-hidden whitespace-nowrap text-ellipsis max-w-[120px] block"
                 [title]="chat.titulo">
                 {{ chat.titulo }}
               </span>
             </div>
+
+            <!-- Botón de eliminar chat -->
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
               class="cursor-pointer hover:text-red-500" (click)="eliminarChat($index, chat.titulo)">
               <path fill="currentColor"
@@ -48,6 +68,8 @@
         </li>
         }
         }
+
+        <!-- Opción de chat temporal -->
         <li class="my-px mb-4">
           <a routerLink="/" routerLinkActive="bg-gray-100 shadow-md" [routerLinkActiveOptions]="{ exact: true }"
             class="flex flex-row items-center h-12 px-4 rounded-lg text-gray-600 hover:bg-gray-100 w-full justify-between">
@@ -62,6 +84,8 @@
             </div>
           </a>
         </li>
+
+        <!-- Botón para eliminar todos los chats si existen -->
         @if (hayChatsValidos()) {
         <li class="flex justify-between items-center">
           <button
@@ -80,7 +104,7 @@
   </div>
 </div>
 
-<!-- Botón de ocultar/mostrar solo para móviles -->
+<!-- Botón flotante para ocultar/mostrar el sidebar en móviles -->
 <button (click)="toggleSidebar()" class="sm:hidden p-2 bg-gray-400 text-white rounded-full absolute top-4 right-4 z-50">
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
     <path fill="currentColor"
